@@ -1,5 +1,5 @@
 {
-  "name": "MusicRecommender",
+  "name": "music-recommender",
   "private": true,
   "scripts": {
     "build": "turbo run build",
