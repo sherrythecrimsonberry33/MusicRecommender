@@ -1,35 +1,25 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 import openai
 import os
-from dotenv import load_dotenv
+from backend.routers.auth import oauth2_scheme
+from backend.auth.auth_handler import decode_access_token
 
 router = APIRouter()
 
-# Load environment variables
-load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Get API Key
-api_key = os.getenv("OPENAI_API_KEY")
-if not api_key:
-    raise ValueError("Missing OpenAI API Key!")
-
-# Set up OpenAI client
-client = openai.OpenAI(api_key=api_key)
-
+# ✅ Secure the `/recommend` Endpoint
 @router.get("/recommend")
-def recommend_songs(query: str):
-    if not query:
-        raise HTTPException(status_code=400, detail="Query parameter is required")
+def recommend_songs(query: str, token: str = Depends(oauth2_scheme)):
+    username = decode_access_token(token)
+    if username is None:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
 
-    try:
-        prompt = f"Suggest 5 songs similar to {query}. Provide only song names."
+    prompt = f"Suggest 5 songs similar to {query}. Provide only song names."
 
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",  # ✅ Use a valid model from your available models
-            messages=[{"role": "user", "content": prompt}]
-        )
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}]
+    )
 
-        return {"recommendations": response.choices[0].message.content.split("\n")}
-
-    except openai.OpenAIError as e:
-        raise HTTPException(status_code=500, detail=f"Error generating recommendations: {str(e)}")
+    return {"recommendations": response["choices"][0]["message"]["content"].split("\n")}

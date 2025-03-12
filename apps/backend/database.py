@@ -1,25 +1,29 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv #type: ignore
 
 # Load environment variables
 load_dotenv()
 
-# MySQL Database URL from .env file
-DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://user:password@localhost/song_recommender")
+#  Read database credentials from .env file
+DATABASE_USER = os.getenv("MYSQL_USER")
+DATABASE_PASSWORD = os.getenv("MYSQL_PASSWORD")
+DATABASE_HOST = os.getenv("MYSQL_HOST")
+DATABASE_NAME = os.getenv("MYSQL_DB")
 
-# Create SQLAlchemy engine
-engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+# Construct the correct database URL
+DATABASE_URL = f"mysql+pymysql://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}/{DATABASE_NAME}"
 
-# Create session factory
+# Create database engine
+engine = create_engine(DATABASE_URL, echo=True) 
+
+# Create session
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Base class for models
 Base = declarative_base()
 
-# Dependency to get a database session
+# Function to get database session
 def get_db():
     db = SessionLocal()
     try:
