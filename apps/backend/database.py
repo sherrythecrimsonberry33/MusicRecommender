@@ -1,19 +1,28 @@
-# database.py
-from sqlalchemy import create_engine, MetaData # type: ignore 
-from sqlalchemy.orm import sessionmaker # type: ignore 
-from .models import Base # type: ignore 
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+import os
+from dotenv import load_dotenv
 
-DATABASE_URL = "sqlite:///./test.db"  # Boiler plate db
+# Load environment variables
+load_dotenv()
 
-engine = create_engine(DATABASE_URL)
+# MySQL Database URL from .env file
+DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://user:password@localhost/song_recommender")
+
+# Create SQLAlchemy engine
+engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+
+# Create session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-metadata = MetaData()
 
+# Base class for models
+Base = declarative_base()
+
+# Dependency to get a database session
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
-
-Base.metadata.create_all(bind=engine)

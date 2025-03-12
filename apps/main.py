@@ -3,8 +3,8 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.routers import auth
-from backend.routers import user
+from backend.routers import auth, spotify, recommend
+
 
 app = FastAPI(debug=True)
 
@@ -21,13 +21,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(user.router)
-app.include_router(auth.router, prefix="/auth")
+# Register routers
+app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+app.include_router(spotify.router, prefix="/spotify", tags=["Spotify API"])
+app.include_router(recommend.router, tags=["AI Recommendations"])
 
 
 @app.get("/")
-def read_root():
-    return {"message": "Hello, World!"}
+def home():
+    return {"message": "Welcome to the AI Song Recommendation API"}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

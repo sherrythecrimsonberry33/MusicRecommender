@@ -1,23 +1,11 @@
-#schemas.py
+from pydantic import BaseModel
 
-from pydantic import BaseModel #type: ignore
-
-class Token (BaseModel):
-    access_token: str
-    token_type: str
-
-class TokenData(BaseModel):
-    username: str | None = None
-
-
-class UserCreate(BaseModel):
+class UserSchema(BaseModel):
     username: str
-    email: str
     password: str
 
-class UserResponse(BaseModel):
-    username: str
-    email: str | None = None
+class RecommendationRequest(BaseModel):
+    query: str
 
-class UserInDB(UserResponse):
-    hashed_password: str
+class TokenData(BaseModel):
+    username: str

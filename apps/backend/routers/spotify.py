@@ -1,7 +1,6 @@
-
-import requests
+import requests #type: ignore
 from fastapi import APIRouter
-from config import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET  # Store secrets in config.py
+from backend.config import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET  # Store secrets in config.py
 
 router = APIRouter()
 

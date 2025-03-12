@@ -1,15 +1,17 @@
-#models.py
-
-from sqlalchemy import Column, Integer, String, Boolean # type: ignore 
-from sqlalchemy.ext.declarative import declarative_base  
-
-Base = declarative_base()
-
+from sqlalchemy import Column, Integer, String
+from backend.database import Base
 
 class User(Base):
     __tablename__ = "users"
+
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
-    email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
-    is_action = Column(Boolean, default=True)
+
+class UserPreference(Base):
+    __tablename__ = "preferences"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer)
+    liked_artists = Column(String)
+    liked_songs = Column(String)
