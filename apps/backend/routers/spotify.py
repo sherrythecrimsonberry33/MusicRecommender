@@ -1,32 +1,32 @@
-import requests
+import requests #type: ignore
 import os
 from fastapi import APIRouter, HTTPException
-from dotenv import load_dotenv  # ✅ Import dotenv
+from dotenv import load_dotenv  #type: ignore
 
 router = APIRouter()
 
-# ✅ Load environment variables from .env file
+#  Load environment variables from .env file
 load_dotenv()
 
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 
-# ✅ Function to get a Spotify access token
+#  Function to get a Spotify access token
 def get_spotify_token():
     auth_url = "https://accounts.spotify.com/api/token"
     
-    # ✅ Correct Spotify Authentication Request
+    #  Correct Spotify Authentication Request
     response = requests.post(
         auth_url,
         data={"grant_type": "client_credentials"},
-        auth=(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET)  # 🔥 Correct auth method
+        auth=(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET)  
     )
 
     token_data = response.json()
     if "access_token" not in token_data:
         raise HTTPException(status_code=500, detail=f"Spotify Auth Error: {token_data}")
 
-    print(f"✅ Spotify Token: {token_data['access_token']}")  # Debugging
+    print(f" Spotify Token: {token_data['access_token']}")  
     return token_data["access_token"]
 
 @router.get("/spotify/search")

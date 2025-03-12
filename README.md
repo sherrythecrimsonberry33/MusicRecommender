@@ -7,19 +7,23 @@ A music recommender system built with Next.js for the frontend and FastAPI for t
 ```
 MusicRecommender/
 ├── apps/
-│   ├── frontend/                # Next.js app
-│   │   ├── public/              # Static assets
-│   │   ├── src/                 # Application source code
-│   │   └── package.json         # Frontend dependencies
-│   └── backend/                 # FastAPI app
-│       ├── app/                 # Backend application code
-│       │   ├── models/          # Database models
-│       │   ├── routers/         # API endpoints
-│       │   ├── schemas/         # Pydantic schemas
-│       │   ├── services/        # Business logic
-│       │   └── authentication/  #authentication services
-│       ├── main.py              # Entry point for FastAPI
-│       └── requirements.txt     # Python dependencies
+│   ├── frontend/                  # Next.js app
+│   │   ├── public/                # Static assets
+│   │   ├── src/                   # Application source code
+│   │   └── package.json           # Frontend dependencies
+│   ├── backend/                   # FastAPI app
+│   |   │   ├── authentication/  
+|   |   |   |   ├──auth_handler.py #authentication services         
+│   |   │   ├── routers/           # API endpoints
+|   |   |   |   ├──auth.py
+|   |   |   |   ├──recommend.py
+|   |   |   |   ├──spotify.py
+|   |   |   |   ├──user.py
+│   |   │   ├── database.py         
+│   |   │   ├── models.py      
+│   |   │   └── schemas.py       # Pydantic schemas
+│   |   └── requirements.txt     # Python dependencies
+|   └── main.py                  # Entry Point for FAST API
 ├── packages/                    # Shared code/libraries
 ├── package.json                 # Root-level dependencies
 └── turbo.json                   # Turborepo configuration

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from passlib.context import CryptContext
 import jwt
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv #type: ignore
 
 # Load environment variables
 load_dotenv()

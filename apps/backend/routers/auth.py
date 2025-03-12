@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from backend.database import get_db
 from backend.models import User
-from backend.auth.auth_handler import hash_password, verify_password, create_access_token
+from backend.authentication.auth_handler import hash_password, verify_password, create_access_token
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -43,7 +43,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 # PROTECTED Endpoint (Check JWT)
 @router.get("/me")
 def get_current_user(token: str = Depends(oauth2_scheme)):
-    from backend.auth.auth_handler import decode_access_token  # Import here to avoid circular imports
+    from backend.authentication.auth_handler import decode_access_token  # Import here to avoid circular imports
     username = decode_access_token(token)
     if username is None:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
