@@ -8,15 +8,16 @@ from pydantic import BaseModel
 
 router = APIRouter()
 
-# ✅ Define `oauth2_scheme` before using it
+#  Define `oauth2_scheme` before using it
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
-# ✅ Ensure FastAPI expects a JSON body
+# Ensure FastAPI expects a JSON body
 class RegisterUser(BaseModel):
     username: str
     email: str
     password: str
 
+# Register Endpoint
 @router.post("/register")
 def register(user: RegisterUser, db: Session = Depends(get_db)):
     if db.query(User).filter(User.email == user.email).first():
@@ -29,7 +30,7 @@ def register(user: RegisterUser, db: Session = Depends(get_db)):
 
     return {"message": "User registered successfully"}
 
-# ✅ LOGIN Endpoint
+# LOGIN Endpoint
 @router.post("/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == form_data.username).first()
@@ -39,7 +40,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     access_token = create_access_token({"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
 
-# ✅ PROTECTED Endpoint (Check JWT)
+# PROTECTED Endpoint (Check JWT)
 @router.get("/me")
 def get_current_user(token: str = Depends(oauth2_scheme)):
     from backend.auth.auth_handler import decode_access_token  # Import here to avoid circular imports
