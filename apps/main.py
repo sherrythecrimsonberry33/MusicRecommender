@@ -6,7 +6,7 @@ from backend.routers import auth, spotify, recommend
 
 app = FastAPI(
     debug=True,
-    title="MelodAI",  # ✅ Custom title
+    title="Musify",  
     description="An AI-powered music recommendation system using OpenAI & Spotify APIs",
     version="1.0.0",
     docs_url="/docs", 
@@ -17,7 +17,7 @@ app = FastAPI(
 origins = [
     "http://localhost:5173",  # Frontend (React/Vite)
     "http://127.0.0.1:5173",  # Sometimes needed for local dev
-    "*"  # Allow all for testing, but restrict in production!
+    "*"                       # Allow all for testing, but restrict in production!
 ]
 
 app.add_middleware(
@@ -36,7 +36,7 @@ app.include_router(recommend.router, tags=["AI Recommendations"])
 # Home Route
 @app.get("/")
 def home():
-    return {"message": "Welcome to the AI Song Recommendation API"}
+    return {"message": "Welcome to Musify"}
 
 # Global Exception Handler
 @app.exception_handler(Exception)
