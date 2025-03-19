@@ -269,7 +269,7 @@ from fastapi.security import OAuth2PasswordBearer
 from database import get_db
 from models import SearchHistory, Recommendation, User
 from authentication.auth_handler import decode_access_token
-from routers.spotify import search_song
+from routers.spotify import search_song, get_deezer_track
 import openai
 import os
 from dotenv import load_dotenv
@@ -364,7 +364,7 @@ def recommend_songs(query: str, token: str = Depends(oauth2_scheme), db: Session
         #                 "spotify_url": track["external_urls"]["spotify"],
         #                 "album_image": track["album"]["images"][0]["url"] if track["album"]["images"] else None,
         #             })
-        for song in suggested_songs:
+        for index, song in enumerate(suggested_songs):
             song = song.strip()
             if song:
                 spotify_data = search_song(song)
@@ -389,11 +389,16 @@ def recommend_songs(query: str, token: str = Depends(oauth2_scheme), db: Session
                         album_image=album_image_url,
                     )
                     db.add(recommendation_entry)
+
+                    deezer_id = None
+                    if index == 0:  # Only for the first track
+                        deezer_id = get_deezer_track(track["name"], track["artists"][0]["name"])
                     recommendations.append({
                         "title": track["name"],
                         "artist": track["artists"][0]["name"],
                         "spotify_url": track["external_urls"]["spotify"],
                         "album_image": album_image_url,
+                        "deezer_id": deezer_id  # Add this field
                     })
 
         db.commit()  #  Commit recommendations to DB
@@ -441,7 +446,7 @@ def recommend_songs_guest(query: str):
         #                 "spotify_url": track["external_urls"]["spotify"],
         #             })
 
-        for song in suggested_songs:
+        for index, song in enumerate(suggested_songs):
             song = song.strip()
             if song:
                 spotify_data = search_song(song)
@@ -457,12 +462,15 @@ def recommend_songs_guest(query: str):
                     album_image_url = None
                     if track.get('album', {}).get('images') and len(track['album']['images']) > 0:
                         album_image_url = track['album']['images'][0]['url']
-                    
+                    deezer_id = None
+                    if index == 0:  # Only for the first track
+                        deezer_id = get_deezer_track(track["name"], track["artists"][0]["name"])
                     recommendations.append({
                         "title": track["name"],
                         "artist": track["artists"][0]["name"],
                         "spotify_url": track["external_urls"]["spotify"],
                         "album_image": album_image_url,
+                        "deezer_id": deezer_id  
                     })
 
         return {"recommendations": recommendations}
