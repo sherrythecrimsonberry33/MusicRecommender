@@ -1,7 +1,7 @@
 
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Search, Play, Heart, Clock } from "lucide-react";
+import { Search, Play, Heart, Clock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from 'next/link';
@@ -152,7 +152,15 @@ export default function MusifyHeroMockup() {
                   className="pl-10 bg-[#3a1866] border-none focus-visible:ring-purple-500 text-white placeholder:text-purple-300"
                 />
               </div>
-              <Button className="bg-purple-600 hover:bg-purple-700 whitespace-nowrap text-white text-xs px-2">Musify mood</Button>
+              {/* <Button className="bg-purple-600 hover:bg-purple-700 whitespace-nowrap text-white text-xs px-2">Musify mood</Button> */}
+              <Button
+              type="button"
+              className="whitespace-nowrap px-4 flex items-center gap-2 transition-all duration-300 bg-purple-600 hover:bg-purple-700 text-white"
+              >
+              <Sparkles className="h-4 w-4 text-white" />
+              <span>Musify AI</span>
+              </Button>
+            
             </div>
           </header>
 
