@@ -266,10 +266,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
-from backend.database import get_db
-from backend.models import SearchHistory, Recommendation, User
-from backend.authentication.auth_handler import decode_access_token
-from backend.routers.spotify import search_song
+from database import get_db
+from models import SearchHistory, Recommendation, User
+from authentication.auth_handler import decode_access_token
+from routers.spotify import search_song
 import openai
 import os
 from dotenv import load_dotenv
@@ -411,3 +411,32 @@ def recommend_songs_guest(query: str):
 
     except openai.OpenAIError as e:
         raise HTTPException(status_code=500, detail=f"OpenAI API Error: {str(e)}")
+
+@router.get("/search/history")
+def get_search_history(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    username = decode_access_token(token)
+    if username is None:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    search_history = (
+        db.query(SearchHistory)
+        .filter(SearchHistory.user_id == user.id)
+        .order_by(SearchHistory.timestamp.desc())
+        .all()
+    )
+
+    return [
+        {
+            "query": search.query,
+            "timestamp": search.timestamp,
+            "recommendations": [
+                {"title": rec.song_title, "artist": rec.artist, "spotify_url": rec.spotify_url}
+                for rec in search.recommendations
+            ],
+        }
+        for search in search_history
+    ]
