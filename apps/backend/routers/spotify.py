@@ -168,6 +168,10 @@ def search_songs(query: str, limit: int = 7):
 
         #  Check if query is a substring of the song title or artist
         if query.lower() in title or query.lower() in artist:
+            # In spotify.py - Add before appending to filtered_songs
+            print(f"Direct Track data: {track}")
+            print(f"Direct Album data: {track.get('album', {})}")
+            print(f"Direct Album images: {track.get('album', {}).get('images', [])}")
             filtered_songs.append({
                 "title": track["name"],
                 "artist": track["artists"][0]["name"],
