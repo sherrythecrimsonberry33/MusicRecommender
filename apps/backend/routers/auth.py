@@ -18,17 +18,56 @@ class RegisterUser(BaseModel):
     password: str
 
 # Register Endpoint
+# @router.post("/register")
+# def register(user: RegisterUser, db: Session = Depends(get_db)):
+#     if db.query(User).filter(User.email == user.email).first():
+#         raise HTTPException(status_code=400, detail="Email already registered")
+
+#     new_user = User(username=user.username, email=user.email, hashed_password=hash_password(user.password))
+#     db.add(new_user)
+#     db.commit()
+#     db.refresh(new_user)
+
+#     return {"message": "User registered successfully"}
+
 @router.post("/register")
 def register(user: RegisterUser, db: Session = Depends(get_db)):
+    # Check for existing email
     if db.query(User).filter(User.email == user.email).first():
-        raise HTTPException(status_code=400, detail="Email already registered")
+        raise HTTPException(
+            status_code=400, 
+            detail={"field": "email", "message": "Email already registered"}
+        )
 
-    new_user = User(username=user.username, email=user.email, hashed_password=hash_password(user.password))
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+    # Check for existing username
+    if db.query(User).filter(User.username == user.username).first():
+        raise HTTPException(
+            status_code=400, 
+            detail={"field": "username", "message": "Username already taken"}
+        )
 
-    return {"message": "User registered successfully"}
+    try:
+        new_user = User(
+            username=user.username, 
+            email=user.email, 
+            hashed_password=hash_password(user.password)
+        )
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+
+        return {"message": "User registered successfully"}
+    
+    except Exception as e:
+        db.rollback()
+        # Log the actual error for debugging
+        print(f"Registration error: {str(e)}")
+        
+        # Return a user-friendly error message
+        raise HTTPException(
+            status_code=500, 
+            detail={"field": "general", "message": "An error occurred during registration. Please try again."}
+        )
 
 # LOGIN Endpoint
 @router.post("/login")
