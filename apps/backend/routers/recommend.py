@@ -341,25 +341,59 @@ def recommend_songs(query: str, token: str = Depends(oauth2_scheme), db: Session
 
         #  Fetch song details from Spotify and store them
         recommendations = []
+        # for song in suggested_songs:
+        #     song = song.strip()
+        #     if song:
+        #         spotify_data = search_song(song)
+        #         if "tracks" in spotify_data and len(spotify_data["tracks"]["items"]) > 0:
+        #             track = spotify_data["tracks"]["items"][0]
+        #             recommendation_entry = Recommendation(
+        #                 search_id=search_entry.id,
+        #                 song_title=track["name"],
+        #                 artist=track["artists"][0]["name"],
+        #                 spotify_url=track["external_urls"]["spotify"],
+        #                 album_image=track["album"]["images"][0]["url"] if track["album"]["images"] else None,
+        #             )
+        #             print(f"AI Track data: {track}")
+        #             print(f"AI Album data: {track.get('album', {})}")
+        #             print(f"AI Album images: {track.get('album', {}).get('images', [])}")
+        #             db.add(recommendation_entry)
+        #             recommendations.append({
+        #                 "title": track["name"],
+        #                 "artist": track["artists"][0]["name"],
+        #                 "spotify_url": track["external_urls"]["spotify"],
+        #                 "album_image": track["album"]["images"][0]["url"] if track["album"]["images"] else None,
+        #             })
         for song in suggested_songs:
             song = song.strip()
             if song:
                 spotify_data = search_song(song)
                 if "tracks" in spotify_data and len(spotify_data["tracks"]["items"]) > 0:
                     track = spotify_data["tracks"]["items"][0]
+                    
+                    # Add debug logs here
+                    print(f"AI Track data: {track}")
+                    print(f"AI Album data: {track.get('album', {})}")
+                    print(f"AI Album images: {track.get('album', {}).get('images', [])}")
+                    
+                    # Fix the album_image assignment
+                    album_image_url = None
+                    if track.get('album', {}).get('images') and len(track['album']['images']) > 0:
+                        album_image_url = track['album']['images'][0]['url']
+                    
                     recommendation_entry = Recommendation(
                         search_id=search_entry.id,
                         song_title=track["name"],
                         artist=track["artists"][0]["name"],
                         spotify_url=track["external_urls"]["spotify"],
-                        album_image=track["album"]["images"][0]["url"] if track["album"]["images"] else None,
+                        album_image=album_image_url,
                     )
                     db.add(recommendation_entry)
                     recommendations.append({
                         "title": track["name"],
                         "artist": track["artists"][0]["name"],
                         "spotify_url": track["external_urls"]["spotify"],
-                        "album_image": track["album"]["images"][0]["url"] if track["album"]["images"] else None,
+                        "album_image": album_image_url,
                     })
 
         db.commit()  #  Commit recommendations to DB
@@ -395,16 +429,40 @@ def recommend_songs_guest(query: str):
 
         #  Fetch song data from Spotify (NO HISTORY STORAGE)
         recommendations = []
+        # for song in suggested_songs:
+        #     song = song.strip()
+        #     if song:
+        #         spotify_data = search_song(song)
+        #         if "tracks" in spotify_data and len(spotify_data["tracks"]["items"]) > 0:
+        #             track = spotify_data["tracks"]["items"][0]
+        #             recommendations.append({
+        #                 "title": track["name"],
+        #                 "artist": track["artists"][0]["name"],
+        #                 "spotify_url": track["external_urls"]["spotify"],
+        #             })
+
         for song in suggested_songs:
             song = song.strip()
             if song:
                 spotify_data = search_song(song)
                 if "tracks" in spotify_data and len(spotify_data["tracks"]["items"]) > 0:
                     track = spotify_data["tracks"]["items"][0]
+                    
+                    # Add debug logs here
+                    print(f"AI Guest Track data: {track}")
+                    print(f"AI Guest Album data: {track.get('album', {})}")
+                    print(f"AI Guest Album images: {track.get('album', {}).get('images', [])}")
+                    
+                    # Fix the album_image assignment
+                    album_image_url = None
+                    if track.get('album', {}).get('images') and len(track['album']['images']) > 0:
+                        album_image_url = track['album']['images'][0]['url']
+                    
                     recommendations.append({
                         "title": track["name"],
                         "artist": track["artists"][0]["name"],
                         "spotify_url": track["external_urls"]["spotify"],
+                        "album_image": album_image_url,
                     })
 
         return {"recommendations": recommendations}
