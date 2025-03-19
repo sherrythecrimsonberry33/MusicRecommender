@@ -111,7 +111,7 @@ export default function MusifyHeroMockup() {
         <div className="absolute top-0 left-0 right-0 h-6 bg-black flex justify-between items-center px-5 z-10">
           <div className="text-white text-xs">9:41</div>
           <div className="flex space-x-1">
-            <div className="w-4 h-3 bg-white opacity-80 rounded-sm"></div>
+            <div className="w-7 h-3 bg-white opacity-80 rounded-md"></div>
             <div className="w-3 h-3 bg-white opacity-80 rounded-full"></div>
             <div className="w-3 h-3 bg-white opacity-80 rounded-full"></div>
           </div>
@@ -129,7 +129,7 @@ export default function MusifyHeroMockup() {
           {/* Header ADDED Logo and Search */}
           <header className="p-4 rounded-2xl bg-[#2d0f4c]">
             <div className="flex items-center justify-center mb-4 rounded-2xl">
-            <Link className="block group" href="/" aria-label="Musify">
+            <Link className="block group mt-2" href="/" aria-label="Musify">
                 <Image 
                     src={Logo} 
                     width={76} 
