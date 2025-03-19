@@ -128,6 +128,22 @@ def get_spotify_token():
 
     return token_data["access_token"]
 
+def get_deezer_track(song_name, artist_name):
+    try:
+        # Encode the search query
+        query = f"{song_name} {artist_name}".replace(" ", "+")
+        response = requests.get(f"https://api.deezer.com/search?q={query}&limit=2")
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("data") and len(data["data"]) > 0:
+                return data["data"][0]["id"]  # Return the Deezer track ID
+        
+        return None
+    except Exception as e:
+        print(f"Error searching Deezer: {str(e)}")
+        return None
+
 #  Publicly accessible Spotify search endpoint
 @router.get("/spotify/search")
 def search_song(query: str):
@@ -172,12 +188,17 @@ def search_songs(query: str, limit: int = 7):
             print(f"Direct Track data: {track}")
             print(f"Direct Album data: {track.get('album', {})}")
             print(f"Direct Album images: {track.get('album', {}).get('images', [])}")
+
+            deezer_id = None
+            if len(filtered_songs) == 0:  # Only for the first track
+                deezer_id = get_deezer_track(track["name"], track["artists"][0]["name"])
             filtered_songs.append({
                 "title": track["name"],
                 "artist": track["artists"][0]["name"],
                 "spotify_url": track["external_urls"]["spotify"],
                 "album_image": track["album"]["images"][0]["url"] if track["album"]["images"] else None,
-                "preview_url": track["preview_url"]
+                "preview_url": track["preview_url"],
+                "deezer_id": deezer_id
             })
 
     #  If no valid matches found, return an empty list
