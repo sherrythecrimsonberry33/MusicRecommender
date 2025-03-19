@@ -278,6 +278,7 @@ interface SongResult {
   album_image?: string;
   imageUrl?: string;  
   duration?: string;
+  deezer_id?: string;
 }
 
 interface SearchHistoryItem {
@@ -675,6 +676,21 @@ const handleSearch = async (e: React.FormEvent) => {
         ) : (
           <>
             {/* Table Header (only show when results are present) */}
+            {songResults.length > 0 && songResults[0].deezer_id && (
+              <div className="mb-6 p-4 bg-[#2d0f4c] rounded-lg">
+                <h3 className="text-white font-medium mb-2">Audio Preview</h3>
+                <iframe 
+                  title="Deezer Player"
+                  src={`https://widget.deezer.com/widget/dark/track/${songResults[0].deezer_id}`}
+                  width="100%" 
+                  height="90" 
+                  frameBorder="0" 
+                  allowTransparency={true} 
+                  allow="encrypted-media; clipboard-write"
+                ></iframe>
+              </div>
+            )}
+            
             {songResults.length > 0 && (
               <div className="grid grid-cols-[auto_1fr_auto_auto] gap-4 px-4 py-2 text-sm text-purple-300 border-b border-[#3a1866]">
                 <div className="w-10">#</div>
