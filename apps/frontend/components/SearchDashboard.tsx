@@ -298,6 +298,7 @@ export default function SearchDashboard() {
   const [error, setError] = useState<string>('');
   const [searchHistory, setSearchHistory] = useState<SearchHistoryItem[]>([]);
   const [showingHistory, setShowingHistory] = useState<boolean>(false);
+  const [filterMode, setFilterMode] = useState<'all' | 'songs' | 'artists'>('all');
 
   // Check authentication status on component mount
   useEffect(() => {
@@ -330,6 +331,29 @@ export default function SearchDashboard() {
     setSongResults([]);
     setShowingHistory(false);
     router.push('/');
+  };
+
+  const sortByTitle = (results: SongResult[]) => {
+    return [...results].sort((a, b) => 
+      a.title.toLowerCase().localeCompare(b.title.toLowerCase())
+    );
+  };
+  
+  const sortByArtist = (results: SongResult[]) => {
+    return [...results].sort((a, b) => 
+      a.artist.toLowerCase().localeCompare(b.artist.toLowerCase())
+    );
+  };
+
+  const getFilteredResults = () => {
+    switch (filterMode) {
+      case 'songs':
+        return sortByTitle(songResults);
+      case 'artists':
+        return sortByArtist(songResults);
+      default:
+        return songResults; // 'all' just shows the original order
+    }
   };
 
   // Fetch search history
@@ -584,31 +608,40 @@ const handleSearch = async (e: React.FormEvent) => {
                 : 'Search Results'}
           </h2>
           
-          {/*filters - only show when not in history mode */}
           {!showingHistory && (
-            <div className="flex flex-wrap -m-1">
-              <button
-                className="font-medium text-sm bg-[#3a1866] hover:bg-[#4a2876] px-3 py-1 rounded-full inline-flex transition duration-150 ease-in-out m-1"
-              >
-                All
-              </button>
-              <button
-                className="font-medium text-sm bg-[#2d0f4c] hover:bg-[#4a2876] px-3 py-1 rounded-full inline-flex transition duration-150 ease-in-out m-1 text-purple-300"
-              >
-                Songs
-              </button>
-              <button
-                className="font-medium text-sm bg-[#2d0f4c] hover:bg-[#4a2876] px-3 py-1 rounded-full inline-flex transition duration-150 ease-in-out m-1 text-purple-300"
-              >
-                Artists
-              </button>
-              <button
-                className="font-medium text-sm bg-[#2d0f4c] hover:bg-[#4a2876] px-3 py-1 rounded-full inline-flex transition duration-150 ease-in-out m-1 text-purple-300"
-              >
-                Albums
-              </button>
-            </div>
-          )}
+          <div className="flex flex-wrap -m-1">
+            <button
+              onClick={() => setFilterMode('all')}
+              className={`font-medium text-sm px-3 py-1 rounded-full inline-flex transition duration-150 ease-in-out m-1 ${
+                filterMode === 'all' 
+                  ? 'bg-[#3a1866] text-white' 
+                  : 'bg-[#2d0f4c] text-purple-300 hover:bg-[#4a2876]'
+              }`}
+            >
+              All
+            </button>
+            <button
+              onClick={() => setFilterMode('songs')}
+              className={`font-medium text-sm px-3 py-1 rounded-full inline-flex transition duration-150 ease-in-out m-1 ${
+                filterMode === 'songs' 
+                  ? 'bg-[#3a1866] text-white' 
+                  : 'bg-[#2d0f4c] text-purple-300 hover:bg-[#4a2876]'
+              }`}
+            >
+              Sort by Title
+            </button>
+            <button
+              onClick={() => setFilterMode('artists')}
+              className={`font-medium text-sm px-3 py-1 rounded-full inline-flex transition duration-150 ease-in-out m-1 ${
+                filterMode === 'artists' 
+                  ? 'bg-[#3a1866] text-white' 
+                  : 'bg-[#2d0f4c] text-purple-300 hover:bg-[#4a2876]'
+              }`}
+            >
+              Sort by Artist
+            </button>
+          </div>
+        )}
         </div>
 
         {/* Search History View */}
@@ -709,7 +742,7 @@ const handleSearch = async (e: React.FormEvent) => {
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
                 </div>
               ) : songResults.length > 0 ? (
-                songResults.map((song, index) => (
+                getFilteredResults().map((song, index) => (
                   <div
                     key={index}
                     className="grid grid-cols-[auto_1fr_auto_auto] gap-4 px-4 py-4 items-center hover:bg-[#2d0f4c] rounded-md transition-colors duration-200 border-b border-[#3a1866]/30"
