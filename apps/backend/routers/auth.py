@@ -69,7 +69,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 # PROTECTED Endpoint (Check JWT)
 @router.get("/me")
 def get_current_user(token: str = Depends(oauth2_scheme)):
-    from backend.authentication.auth_handler import decode_access_token  # Import here to avoid circular imports
+    from authentication.auth_handler import decode_access_token  # Import here to avoid circular imports
     username = decode_access_token(token)
     if username is None:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
