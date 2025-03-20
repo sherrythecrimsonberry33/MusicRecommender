@@ -14,7 +14,21 @@ const nextConfig = {
       'image-cdn-ak.spotifycdn.com'
     ],
   },
-  // Optionally, add any other Next.js config below
+  
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Permissions-Policy',
+            value: 'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()'
+          }
+        ]
+      }
+    ]
+  }
+
 };
 
 module.exports = withMDX(nextConfig);
