@@ -717,9 +717,8 @@ const handleSearch = async (e: React.FormEvent) => {
                   src={`https://widget.deezer.com/widget/dark/track/${songResults[0].deezer_id}`}
                   width="100%" 
                   height="90" 
-                  frameBorder="0" 
-                  allowTransparency={true} 
                   allow="encrypted-media; clipboard-write"
+                  allowtransparency="true"
                 ></iframe>
               </div>
             )}
