@@ -13,16 +13,10 @@ app = FastAPI(
     redoc_url="/redoc"  
 )
 
-# CORS Settings
-origins = [
-    "http://localhost:5173",  # Frontend (React/Vite)
-    "http://127.0.0.1:5173",  # Sometimes needed for local dev
-    "*"                       # Allow all for testing, but restrict in production!
-]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["http://localhost:3000, http://localhost:8000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
