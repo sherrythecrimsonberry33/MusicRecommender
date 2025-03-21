@@ -711,7 +711,7 @@ const handleSearch = async (e: React.FormEvent) => {
             {/* Table Header (only show when results are present) */}
             {songResults.length > 0 && songResults[0].deezer_id && (
               <div className="mb-6 p-4 bg-[#2d0f4c] rounded-lg">
-                <h3 className="text-white font-medium mb-2">Audio Preview</h3>
+                <h3 className="text-white font-medium mb-2">30s Free Top Audio Preview</h3>
                 <iframe 
                   title="Deezer Player"
                   src={`https://widget.deezer.com/widget/dark/track/${songResults[0].deezer_id}`}
@@ -788,9 +788,6 @@ const handleSearch = async (e: React.FormEvent) => {
                     </div>
                     <div className="text-sm text-purple-300">{song.duration}</div>
                     <div className="w-10 flex justify-end">
-                      <button className="text-purple-300 hover:text-white transition-colors">
-                        <Heart className="h-4 w-4" />
-                      </button>
                     </div>
                   </div>
                 ))
