@@ -30,27 +30,7 @@ class ApiService {
       return headers;
     }
   
-    // Register a new user
-    // async register(username: string, email: string, password: string) {
-    //   try {
-    //     const response = await fetch(`${this.baseUrl}/auth/register`, {
-    //       method: 'POST',
-    //       headers: this.getHeaders(false),
-    //       body: JSON.stringify({ username, email, password }),
-    //     });
-  
-    //     const data = await response.json();
-  
-    //     if (!response.ok) {
-    //       throw new Error(data.detail || 'Registration failed');
-    //     }
-  
-    //     return data;
-    //   } catch (error) {
-    //     console.error('Registration error:', error);
-    //     throw error;
-    //   }
-    // }
+
 
     async register(username: string, email: string, password: string) {
         try {
@@ -141,24 +121,7 @@ class ApiService {
       }
     }
   
-    // Get song recommendations (authenticated)
-    // async getRecommendations(query: string) {
-    //   try {
-    //     const response = await fetch(`${this.baseUrl}/recommend?query=${encodeURIComponent(query)}`, {
-    //       method: 'GET',
-    //       headers: this.getHeaders(),
-    //     });
-  
-    //     if (!response.ok) {
-    //       throw new Error('Failed to fetch recommendations');
-    //     }
-  
-    //     return await response.json();
-    //   } catch (error) {
-    //     console.error('Error fetching recommendations:', error);
-    //     throw error;
-    //   }
-    // }
+
 
     async getRecommendations(query: string) {
         try {
@@ -170,7 +133,7 @@ class ApiService {
           const data = await response.json();
           
           // For validation messages, return the data directly instead of throwing an error
-          // This allows the frontend to handle the message appropriately
+
           if (data.message && data.message.includes("inappropriate")) {
             return data;
           }
@@ -187,24 +150,7 @@ class ApiService {
       }
 
   
-    // Get song recommendations (guest mode)
-    // async getGuestRecommendations(query: string) {
-    //   try {
-    //     const response = await fetch(`${this.baseUrl}/recommend/guest?query=${encodeURIComponent(query)}`, {
-    //       method: 'GET',
-    //       headers: this.getHeaders(false),
-    //     });
-  
-    //     if (!response.ok) {
-    //       throw new Error('Failed to fetch recommendations');
-    //     }
-  
-    //     return await response.json();
-    //   } catch (error) {
-    //     console.error('Error fetching guest recommendations:', error);
-    //     throw error;
-    //   }
-    // }
+
 
     async getGuestRecommendations(query: string) {
         try {
@@ -216,7 +162,7 @@ class ApiService {
           const data = await response.json();
           
           // For validation messages, return the data directly instead of throwing an error
-          // This allows the frontend to handle the message appropriately
+    
           if (data.message && data.message.includes("inappropriate")) {
             return data;
           }
