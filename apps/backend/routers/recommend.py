@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
-from database import get_db
-from models import SearchHistory, Recommendation, User
-from authentication.auth_handler import decode_access_token
-from routers.spotify import search_song, get_deezer_track
+from backend.database import get_db
+from backend.models import SearchHistory, Recommendation, User
+from backend.authentication.auth_handler import decode_access_token
+from backend.routers.spotify import search_song, get_deezer_track
 import openai
 import os
 from dotenv import load_dotenv

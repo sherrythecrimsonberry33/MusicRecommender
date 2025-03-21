@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import auth, spotify, recommend
+from backend.routers import auth, spotify, recommend
 
 app = FastAPI(
     debug=True,
