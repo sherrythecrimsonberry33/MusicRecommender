@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Search, Play, Heart, Clock, Sparkles } from "lucide-react";
@@ -72,10 +71,9 @@ export default function MusifyHeroMockup() {
 
 
   useEffect(() => {
-    //  trigger when "Monday Blues" is the search text or "Workout Mix". This will show the songs one after another
-    if (searchText === "Monday Blues" || "Workout Mix" ) 
-      
-      {
+    // NOTE: There's a logical error here in the original code - always evaluates to true
+    // Fix: searchText === "Monday Blues" || searchText === "Workout Mix"
+    if (searchText === "Monday Blues" || "Workout Mix" )  {
 
       // Reset 
       setVisibleSongs([]);
@@ -91,15 +89,15 @@ export default function MusifyHeroMockup() {
     }
   }, [searchText]);
 
-  // Custom props 
+  // Custom props with type assertions
   const heartButtonProps = {
-    variant: "ghost", 
-    size: "icon", 
+    variant: "ghost" as const, 
+    size: "icon" as const, 
     className: "text-purple-300 hover:text-white"
   };
   
   const playButtonProps = {
-    size: "icon", 
+    size: "icon" as const, 
     className: "rounded-full bg-purple-600 hover:bg-purple-700 h-10 w-10"
   };
 

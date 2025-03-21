@@ -411,7 +411,6 @@ const handleSearch = async (e: React.FormEvent) => {
                   width="100%" 
                   height="90" 
                   allow="encrypted-media; clipboard-write"
-                  allowtransparency="true"
                 ></iframe>
               </div>
             )}
