@@ -1,5 +1,5 @@
 
-# 🎵 Music Recommender System
+# 🎵 Musify
 
 A full-stack music recommendation web application that allows users to get personalized music recommendations based on mood, artist, or genre input. The system supports both guest and authenticated users, using FastAPI for the backend and Next.js for the frontend.
 
