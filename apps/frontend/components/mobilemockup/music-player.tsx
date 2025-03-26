@@ -1,43 +1,41 @@
 import { Play, SkipBack, SkipForward, Volume2, Repeat, Shuffle } from "lucide-react"
-import Image from "next/image"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 
 export default function MusicPlayer() {
-
+  // Fix: Use string literals instead of string types
   const shuffleButtonProps = {
-    variant: "ghost", 
-    size: "icon", 
+    variant: "ghost" as const, 
+    size: "icon" as const, 
     className: "text-purple-300"
   }
   
   const skipBackButtonProps = {
-    variant: "ghost", 
-    size: "icon", 
+    variant: "ghost" as const, 
+    size: "icon" as const, 
     className: "text-purple-300"
   }
   
   const playButtonProps = {
-    size: "icon", 
+    size: "icon" as const, 
     className: "rounded-full bg-purple-600 hover:bg-purple-700 h-10 w-10"
   }
   
   const skipForwardButtonProps = {
-    variant: "ghost", 
-    size: "icon", 
+    variant: "ghost" as const, 
+    size: "icon" as const, 
     className: "text-purple-300"
   }
   
   const repeatButtonProps = {
-    variant: "ghost", 
-    size: "icon", 
+    variant: "ghost" as const, 
+    size: "icon" as const, 
     className: "text-purple-300"
   }
 
   return (
     <div className="bg-[#2d0f4c] p-3 border-t border-[#3a1866]">
       <div className="flex items-center gap-3">
-
         <div className="flex-1 min-w-0">
           <h4 className="font-medium truncate">Currently Playing Track</h4>
           <p className="text-sm text-purple-300 truncate">Artist Name</p>
