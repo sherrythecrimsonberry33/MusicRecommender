@@ -208,9 +208,7 @@ def get_search_history(token: str = Depends(oauth2_scheme), db: Session = Depend
         for search in search_history
     ]
 
-# Add this to your recommend.py file in the routers directory
 
-# Replace the existing delete endpoint in recommend.py
 
 @router.delete("/search/history/{history_id}")
 def delete_search_history(history_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
