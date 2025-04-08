@@ -218,6 +218,50 @@ class ApiService {
         throw error;
       }
     }
+    // Add these methods to your api.ts service
+
+    // Delete a specific search history entry
+    async deleteSearchHistory(historyId: number): Promise<any> {
+      try {
+        const response = await fetch(`${this.baseUrl}/search/history/${historyId}`, {
+          method: 'DELETE',
+          headers: this.getHeaders(),
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.detail || 'Failed to delete search history');
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error('Error deleting search history:', error);
+        throw error;
+      }
+    }
+
+    // Delete all search history
+    async deleteAllSearchHistory(): Promise<any> {
+      try {
+        const response = await fetch(`${this.baseUrl}/search/history`, {
+          method: 'DELETE',
+          headers: this.getHeaders(),
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.detail || 'Failed to delete all search history');
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error('Error deleting all search history:', error);
+        throw error;
+      }
+    }
+    
+    
+
   }
   
   // Export a singleton instance

@@ -1,8 +1,19 @@
-import base64
-import requests # type: ignore
 import os
-from fastapi import APIRouter, HTTPException
-from dotenv import load_dotenv # type: ignore
+import requests
+import base64
+import json
+import secrets
+from urllib.parse import urlencode
+from fastapi import APIRouter, HTTPException, Depends, Request, Response, Query
+from sqlalchemy.orm import Session
+from database import get_db
+from models import User
+from authentication.auth_handler import decode_access_token
+from fastapi.security import OAuth2PasswordBearer
+from fastapi.responses import RedirectResponse
+from pydantic import BaseModel
+from typing import List, Optional
+from dotenv import load_dotenv
 
 router = APIRouter()
 
@@ -11,6 +22,7 @@ load_dotenv()
 
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
+
 
 #  Helper function to encode Client ID & Secret properly
 def get_encoded_credentials():
@@ -111,5 +123,9 @@ def search_songs(query: str, limit: int = 7):
          raise HTTPException(status_code=404, detail="No relevant songs found. Please enter a valid artist or song name.")
 
     return {"songs": filtered_songs}
+
+
+
+
 
 

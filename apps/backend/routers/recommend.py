@@ -197,6 +197,7 @@ def get_search_history(token: str = Depends(oauth2_scheme), db: Session = Depend
 
     return [
         {
+            "id": search.id,
             "query": search.query,
             "timestamp": search.timestamp,
             "recommendations": [
@@ -206,6 +207,7 @@ def get_search_history(token: str = Depends(oauth2_scheme), db: Session = Depend
         }
         for search in search_history
     ]
+
 
 
 @router.delete("/search/history/{history_id}")
