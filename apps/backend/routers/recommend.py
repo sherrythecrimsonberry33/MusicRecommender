@@ -206,3 +206,77 @@ def get_search_history(token: str = Depends(oauth2_scheme), db: Session = Depend
         }
         for search in search_history
     ]
+
+
+@router.delete("/search/history/{history_id}")
+def delete_search_history(history_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    """Delete a specific search history entry"""
+    # Authenticate user
+    username = decode_access_token(token)
+    if username is None:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    print(f"Deleting history ID {history_id} for user {username} (ID: {user.id})")
+
+    # Find the search history entry - without filtering by user first
+    search_entry = db.query(SearchHistory).filter(SearchHistory.id == history_id).first()
+    
+    # If no entry found with that ID at all
+    if not search_entry:
+        raise HTTPException(status_code=404, detail="Search history entry not found")
+    
+    # Check if this entry belongs to the authenticated user
+    if search_entry.user_id != user.id:
+        print(f"Security: User {user.id} tried to delete history owned by user {search_entry.user_id}")
+        raise HTTPException(
+            status_code=403, 
+            detail="You do not have permission to delete this search history entry"
+        )
+
+    try:
+        # Delete all recommendations associated with this search
+        deleted_recs = db.query(Recommendation).filter(
+            Recommendation.search_id == history_id
+        ).delete(synchronize_session=False)
+        
+        # Delete the search history entry
+        db.delete(search_entry)
+        db.commit()
+        
+        print(f"Successfully deleted history ID {history_id} with {deleted_recs} recommendations")
+        return {"message": "Search history deleted successfully", "id": history_id}
+    
+    except Exception as e:
+        db.rollback()
+        print(f"Error deleting history: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@router.delete("/search/history")
+def delete_all_search_history(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    """Delete all search history for the authenticated user"""
+    # Authenticate user
+    username = decode_access_token(token)
+    if username is None:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Find all search history entries for this user
+    search_ids = [search.id for search in db.query(SearchHistory).filter(SearchHistory.user_id == user.id).all()]
+    
+    # Delete associated recommendations
+    if search_ids:
+        db.query(Recommendation).filter(Recommendation.search_id.in_(search_ids)).delete(synchronize_session=False)
+    
+    # Delete the search history entries
+    rows_deleted = db.query(SearchHistory).filter(SearchHistory.user_id == user.id).delete()
+    db.commit()
+
+    return {"message": f"All search history deleted successfully", "count": rows_deleted}
